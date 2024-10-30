@@ -26,8 +26,7 @@ class GlobMatcher(globPattern: String, ignoreCase: Boolean = false) : RegexMatch
                         if (++index >= globPattern.length) {  // If it's last character, not an escape char
                             ch
                         } else {
-                            val nch = globPattern[index]
-                            when (nch) {
+                            when (val nch = globPattern[index]) {
                                 ',' -> nch                 // Escape character not needed
                                 'Q', 'E' -> "\\\\$nch"     // \Q \E are special delimiters in regex for quoting literals
                                 else -> "\\$nch"           // Escape any other character

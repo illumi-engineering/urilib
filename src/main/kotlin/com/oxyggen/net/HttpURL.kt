@@ -19,7 +19,7 @@ open class HttpURL(uriString: String, context: ContextURI? = null) : CommonURL(u
                 if (result.containsKey(name))
                     result[name]!!.add(value)
                 else
-                    result.put(name, mutableListOf(value))
+                    result[name] = mutableListOf(value)
             }
         }
         result

@@ -76,7 +76,7 @@ open class Path protected constructor(
 
         for (i in folders.indices)
             when (val part = folders[i]) {
-                "" -> if (normalizedFolders.size == 0 || !normalizedFolders.last().isBlank()) normalizedFolders.add(part)
+                "" -> if (normalizedFolders.size == 0 || normalizedFolders.last().isNotBlank()) normalizedFolders.add(part)
                 DIRECTORY_CURRENT -> if (i == 0) normalizedFolders.add(part) /*else if (i == folders.size - 1) normalizedFolders.add("")*/
                 DIRECTORY_PARENT -> if ((normalizedFolders.size > 1) || (normalizedFolders.size == 1 && normalizedFolders[0] != DIRECTORY_CURRENT))
                     normalizedFolders.removeAt(normalizedFolders.size - 1)

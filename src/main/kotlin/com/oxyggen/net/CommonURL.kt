@@ -58,7 +58,7 @@ open class CommonURL(uriString: String, val context: ContextURI? = null) : URL(u
                 ?: throw IllegalArgumentException("Can't parse $uriString")
 
         // Save pointers to userInfo, host and port
-        if (match.groups.get("authority")?.value.isNullOrBlank()) {
+        if (match.groups["authority"]?.value.isNullOrBlank()) {
             if (context is CommonURL) {
                 userInfoRange = null
                 hostRange = null
@@ -78,7 +78,7 @@ open class CommonURL(uriString: String, val context: ContextURI? = null) : URL(u
         queryRange = match.groups["query"]?.range
         fragmentRange = match.groups["fragment"]?.range
 
-        // We have to resolve the full path here in constructor, to check it's validness
+        // We have to resolve the full path here in constructor, to check its validness
         val foundPath = Path.parse(if (pathRange != null) schemeSpecificPart.substring(pathRange) else "")
         path = if (foundPath.isAbsolute) {
             foundPath
@@ -100,15 +100,15 @@ open class CommonURL(uriString: String, val context: ContextURI? = null) : URL(u
         // Host (always)
         result += host
 
-        // Port only when it's not the defualt port
+        // Port only when it's not the default port
         if (getDefaultPort() != port)
             result += ":$port"
 
         // Normalized path or the complete path
-        if (normalized)
-            result += path.normalized.complete
+        result += if (normalized)
+            path.normalized.complete
         else
-            result += path.complete
+            path.complete
 
         // Query
         if (query.isNotEmpty())

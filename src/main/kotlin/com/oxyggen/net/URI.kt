@@ -59,10 +59,10 @@ open class URI(uriString: String, context: ContextURI? = null) {
     override fun toString(): String {
         val objectName = super.toString()
 
-        if (isRelative)
-            return "$objectName ($schemeSpecificPart)"
+        return if (isRelative)
+            "$objectName ($schemeSpecificPart)"
         else
-            return "$objectName ($scheme:$schemeSpecificPart)"
+            "$objectName ($scheme:$schemeSpecificPart)"
     }
 
     open fun toUriString() =
@@ -73,7 +73,7 @@ open class URI(uriString: String, context: ContextURI? = null) {
             }
 
     companion object {
-        val defaultSchemeHandlers = mapOf<String, KClass<out URI>>(
+        private val defaultSchemeHandlers = mapOf<String, KClass<out URI>>(
                 "http" to HttpURL::class,
                 "https" to HttpURL::class,
                 "mailto" to MailtoURI::class,
@@ -81,11 +81,11 @@ open class URI(uriString: String, context: ContextURI? = null) {
         )
 
         /**
-         * Parse an URI string and create URI object
+         * Parse a URI string and create URI object
          *
          * @param uriString The URI string
          * @param context URI context used when the URI string contains relative URI
-         * @return Returns an URI object (or sub-object)
+         * @return Returns a URI object (or sub-object)
          */
         fun parse(uriString: String, context: ContextURI? = null, schemeHandlers: Map<String, KClass<out URI>> = defaultSchemeHandlers): URI {
             val uri = URI(uriString, context)
@@ -101,19 +101,15 @@ open class URI(uriString: String, context: ContextURI? = null) {
                         && it.parameters[1].type.isSupertypeOf(paramType2)
             }
 
-            if (fullConstructor != null) {
-                return fullConstructor.call(uriString, context)
+            return if (fullConstructor != null) {
+                fullConstructor.call(uriString, context)
             } else {
                 val simpleConstructor = constructors?.find {
                     it.parameters.size == 1
                             && it.parameters[0].type.isSupertypeOf(paramType1)
                 }
 
-                if (simpleConstructor != null) {
-                    return simpleConstructor.call(uriString)
-                } else {
-                    return uri
-                }
+                simpleConstructor?.call(uriString) ?: uri
             }
         }
 
@@ -160,10 +156,9 @@ open class URI(uriString: String, context: ContextURI? = null) {
             var byteResult = byteArrayOf()
             var index = 0
             while (index < encoded.length) {
-                val ch = encoded[index]
-                when (ch) {
+                when (val ch = encoded[index]) {
                     '+' -> {
-                        byteResult += ' '.toByte()
+                        byteResult += ' '.code.toByte()
                         index++
                     }
                     '%' -> {
@@ -171,7 +166,7 @@ open class URI(uriString: String, context: ContextURI? = null) {
                         index += 3
                     }
                     else -> {
-                        byteResult += ch.toByte()
+                        byteResult += ch.code.toByte()
                         index++
                     }
                 }

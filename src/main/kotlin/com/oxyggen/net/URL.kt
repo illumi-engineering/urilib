@@ -1,3 +1,3 @@
 package com.oxyggen.net
 
-abstract class URL(uristring: String, context: ContextURI? = null) : ContextURI(uristring, context)
+abstract class URL(uriString: String, context: ContextURI? = null) : ContextURI(uriString, context)

@@ -32,8 +32,8 @@
 # .idea/*.iml
 # .idea/modules
 
-# CMake
-cmake-build-*/
+build/
+.gradle/
 
 # Mongo Explorer plugin
 .idea/**/mongoSettings.xml
