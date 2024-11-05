@@ -7,11 +7,11 @@ package com.oxyggen.io
  * to Path object.
  */
 open class Path protected constructor(
-        val device: String,
-        val folder: List<String>,
-        val file: String,
-        val isAbsolute: Boolean,
-        val pathSeparator: String = "/") {
+    val device: String,
+    val parts: List<String>,
+    val file: String,
+    val isAbsolute: Boolean,
+    val pathSeparator: String = "/") {
 
     companion object {
         private const val DEFAULT_PATH_SEPARATOR = "/"
@@ -64,19 +64,19 @@ open class Path protected constructor(
 
             return Path(
                     device = device,
-                    folder = allParts,
+                    parts = allParts,
                     file = file,
                     isAbsolute = isAbsolute,
                     pathSeparator = pathSeparator)
         }
     }
 
-    private fun determineNormalizedFolders(folders: List<String>): List<String> {
+    private fun determineNormalizedFolders(parts: List<String>): List<String> {
         val normalizedFolders = mutableListOf<String>()
 
-        for (i in folders.indices)
-            when (val part = folders[i]) {
-                "" -> if (normalizedFolders.size == 0 || normalizedFolders.last().isNotBlank()) normalizedFolders.add(part)
+        for (i in parts.indices)
+            when (val part = parts[i]) {
+                "" -> if (normalizedFolders.size == 0 ||  normalizedFolders.last().isNotBlank()) normalizedFolders.add(part)
                 DIRECTORY_CURRENT -> if (i == 0) normalizedFolders.add(part) /*else if (i == folders.size - 1) normalizedFolders.add("")*/
                 DIRECTORY_PARENT -> if ((normalizedFolders.size > 1) || (normalizedFolders.size == 1 && normalizedFolders[0] != DIRECTORY_CURRENT))
                     normalizedFolders.removeAt(normalizedFolders.size - 1)
@@ -104,7 +104,7 @@ open class Path protected constructor(
      * The directory name
      **/
     open val directory by lazy {
-        (if (isAbsolute) pathSeparator else "") + folder.joinToString(pathSeparator) + (if (folder.isNotEmpty()) pathSeparator else "")
+        (if (isAbsolute) pathSeparator else "") + parts.joinToString(pathSeparator) + (if (parts.isNotEmpty()) pathSeparator else "")
     }
 
     /**
@@ -118,7 +118,7 @@ open class Path protected constructor(
      * The normalized path
      **/
     open val normalized by lazy {
-        if (this is NormalizedPath) this else NormalizedPath(device, determineNormalizedFolders(folder), file, isAbsolute, pathSeparator)
+        if (this is NormalizedPath) this else NormalizedPath(device, determineNormalizedFolders(parts), file, isAbsolute, pathSeparator)
     }
 
     /**
@@ -132,7 +132,7 @@ open class Path protected constructor(
             } else {
                 Path(
                         device = this.device,
-                        folder = this.folder + anotherPath.folder,
+                        parts = this.parts + anotherPath.parts,
                         file = anotherPath.file,
                         isAbsolute = this.isAbsolute,
                         pathSeparator = this.pathSeparator)

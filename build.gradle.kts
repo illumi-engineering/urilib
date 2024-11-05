@@ -7,12 +7,12 @@ plugins {
 }
 
 group = "com.oxyggen.net"
-version = "1.0.11"
+version = "1.0.12"
 
 
 repositories {
     mavenCentral()
- }
+}
 
 dependencies {
     implementation(kotlin("stdlib"))
@@ -45,6 +45,24 @@ val dokkaJavadocJar by tasks.registering(Jar::class) {
 publishing {
     repositories {
         mavenLocal()
+
+        maven {
+            name = "frottingServicesSnapshots"
+            url = uri("https://maven.frotting.services/snapshots")
+            credentials(PasswordCredentials::class)
+            authentication {
+                create<BasicAuthentication>("basic")
+            }
+        }
+
+        maven {
+            name = "frottingServicesReleases"
+            url = uri("https://maven.frotting.services/releases")
+            credentials(PasswordCredentials::class)
+            authentication {
+                create<BasicAuthentication>("basic")
+            }
+        }
     }
 
     publications {
